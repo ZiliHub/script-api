@@ -1,54 +1,19 @@
 const express = require("express");
+const axios = require("axios");
+
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const validKeys = ["abc123"];
+const validHWID = ["HWID_1"];
 
-// 🔥 script nằm trong ENV (KHÔNG ở GitHub)
-const scripts = {
-  "x8f3k2": process.env.SCRIPT_MAIN
-};
+app.get("/api/v2/cache/x8f3k2", async (req, res) => {
+  const { key, hwid } = req.query;
 
-// encode
-function encode(str, key) {
-  let result = "";
-  for (let i = 0; i < str.length; i++) {
-    let k = key.charCodeAt(i % key.length);
-    let c = str.charCodeAt(i);
-    result += String.fromCharCode(c ^ k);
-  }
-  return result;
-}
+  if (!validKeys.includes(key)) return res.send("invalid key");
+  if (!validHWID.includes(hwid)) return res.send("hwid not allowed");
 
-// API
-app.get("/api/v2/cache/:id", (req, res) => {
-  const id = req.params.id;
-
-  if (!scripts[id]) return res.send("");
-
-  // chặn browser
-  const ua = req.headers["user-agent"];
-  if (!ua || !ua.includes("Roblox")) {
-    return res.send("access denied");
-  }
-
-  const encoded = encode(scripts[id], "my_secret_key");
-
-  const loader = `
-  local function d(s,k)
-    local r={}
-    for i=1,#s do
-      local c=s:byte(i)
-      local k2=k:byte((i%#k)+1)
-      r[i]=string.char(bit32.bxor(c,k2))
-    end
-    return table.concat(r)
-  end
-  loadstring(d(${JSON.stringify(encoded)}, "my_secret_key"))()
-  `;
-
-  res.send(loader);
+  const r = await axios.get("https://raw.githubusercontent.com/ZiliHub/REPO/main/main.lua");
+  res.send(r.data);
 });
 
-app.listen(PORT, () => {
-  console.log("Server running...");
-});
+app.listen(3000, () => console.log("running"));
