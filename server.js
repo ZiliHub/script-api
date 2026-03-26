@@ -28,7 +28,7 @@ app.get("/l", (req, res) => {
     local h=game:GetService("RbxAnalyticsService"):GetClientId()
     local t=tostring(math.floor(tick()))
     local s="${sign("loader")}"
-    local u="https://YOUR-APP.onrender.com/v?k="..k.."&h="..h.."&t="..t.."&s="..s
+    local u="https://script-api-6uxu.onrender.com/v?k="..k.."&h="..h.."&t="..t.."&s="..s
     local r=game:HttpGet(u)
     local d=game:GetService("HttpService"):JSONDecode(r)
     if d.s=="ok" then
