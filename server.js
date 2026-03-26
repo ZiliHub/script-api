@@ -24,7 +24,7 @@ function sign(data) {
 // ===== LOADER (ANTI SKID) =====
 app.get("/l", (req, res) => {
     res.send(`
-    local k="PUT_KEY_HERE"
+    local k="d494528c"
     local h=game:GetService("RbxAnalyticsService"):GetClientId()
     local t=tostring(math.floor(tick()))
     local s="${sign("loader")}"
